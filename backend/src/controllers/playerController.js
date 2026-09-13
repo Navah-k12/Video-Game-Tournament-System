@@ -7,7 +7,7 @@ const registerPlayers = async (req,res) => {
 
     if(!name || !gamertag || !email)
     {
-        res.status(400).json({Error: 'Error: No deje ni un campo vacio'})
+        res.status(400).json({error: 'Error: No deje ni un campo vacio'})
         return;
     };
 
@@ -16,10 +16,17 @@ const registerPlayers = async (req,res) => {
         await db.query(query, [name, gamertag, email]);
 
         return res.status(201).json({message: 'Jugador registrado exitosamente'});
-    }catch(ERROR){
-        console.error(ERROR);
-        res.status(500).json({ERROR:'Error en el servidor al registrarte'});
+    }catch(error){
+        console.error(error);
+        
+
+        if(error.code === 'ER_DUP_ENTRY'){
+            return res.status(400).json({error: 'El Gamertag o el Email no se encuentra disponible'});
+        }
+
+        res.status(500).json({error:'Error en el servidor al registrarte'});
     };
 };
-
+        // ER_DUP_ENTRY (que es la etiqueta que usa MySQL para decir 'Entrada duplicada')
+        // .code: Es el código o la etiqueta exacta que le puso MySQL al tipo de error que ocurrió.
 module.exports = {registerPlayers};
