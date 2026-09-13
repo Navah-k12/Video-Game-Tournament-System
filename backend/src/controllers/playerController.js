@@ -30,7 +30,7 @@ const registerPlayers = async (req,res) => {
 
 const getPlayers = async(req, res) =>{
     try{
-        const [rows] = await db.query('SELECT gamertag, email, fecha_registro FROM Players');
+        const [rows] = await db.query('SELECT gamertag, email, date_register FROM Players');
         res.status(200).json(rows);
     }catch(error){
         console.error(error);

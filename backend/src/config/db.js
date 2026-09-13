@@ -1,20 +1,21 @@
 
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 
-mysql.createConnection({
+
+const db = mysql.createPool({
     host: '127.0.0.1',
-    user: 'nava',
+    user: 'root',
     password: 'nava1234',
     database: 'SistemaTorneos'
 });
 
-db.connection((Error) =>{
-    if(Error){
-        console.error('Error en la conneción en la BD: ',Error)
-        return;
-    }
-    else{
-        console.log("Conectado Exitosamente")
-    }
+db.getConnection()
+    .then(connection => {
+        console.log('¡Conectado exitosamente a la base de datos SistemaTorneos!');
+        connection.release();
+    })
+    .catch(err => {
+        console.error('Error al conectar a la base de datos:', err);
+    });
 
-});
+module.exports = db;
