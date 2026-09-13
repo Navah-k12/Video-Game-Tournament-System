@@ -2,8 +2,9 @@
 
 const express = require('express');
 const router = express.Router();
-const { registerPlayers } = require('../controllers/playerController');
+const { registerPlayers, getPlayers } = require('../controllers/playerController');
 
 router.post('/register', registerPlayers);
+router.get('/listPlayers', getPlayers);
 
 module.exports = router;

@@ -27,6 +27,17 @@ const registerPlayers = async (req,res) => {
         res.status(500).json({error:'Error en el servidor al registrarte'});
     };
 };
+
+const getPlayers = async(req, res) =>{
+    try{
+        const [rows] = await db.query('SELECT gamertag, email, fecha_registro FROM Players');
+        res.status(200).json(rows);
+    }catch(error){
+        console.error(error);
+        res.status(500).json({error: 'Error al obtener la lista de jugadores'});
+    };
+
+};
         // ER_DUP_ENTRY (que es la etiqueta que usa MySQL para decir 'Entrada duplicada')
         // .code: Es el código o la etiqueta exacta que le puso MySQL al tipo de error que ocurrió.
-module.exports = {registerPlayers};
+module.exports = {registerPlayers, getPlayers};
