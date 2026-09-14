@@ -25,4 +25,24 @@ const registerScore = async (req, res) => {
     }
 };
 
-module.exports = { registerScore };
+const getRanking = async (req, res) => {
+    try {
+        const [rows] = await db.query(
+            `SELECT p.id,
+                    j.gamertag AS jugador,
+                    v.nombre AS videojuego,
+                    p.puntuacion
+             FROM puntuaciones p
+             INNER JOIN jugadores j ON j.id = p.jugador_id
+             INNER JOIN videojuegos v ON v.id = p.videojuego_id
+             ORDER BY p.puntuacion DESC, p.fecha ASC`
+        );
+        const ranking = rows.map((row, index) => ({ posicion: index + 1, ...row }));
+        return res.status(200).json(ranking);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error al generar la clasificación' });
+    }
+};
+
+module.exports = { registerScore, getRanking };
