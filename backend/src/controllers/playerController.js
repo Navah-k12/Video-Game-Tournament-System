@@ -23,7 +23,7 @@ const registerPlayers = async (req, res) => {
 const getPlayers = async (req, res) => {
     try {
         const [rows] = await db.query(
-            'SELECT id, gamertag, correo, fecha_registro FROM jugadores ORDER BY id'
+            'SELECT id, nombre, gamertag, correo, fecha_registro AS fechaRegistro FROM jugadores ORDER BY id'
         );
         return res.status(200).json(rows);
     } catch (error) {
@@ -42,7 +42,7 @@ const searchPlayers = async (req, res) => {
     try {
         const search = `%${q.trim()}%`;
         const [rows] = await db.query(
-            `SELECT id, nombre, gamertag, correo, fecha_registro
+            `SELECT id, nombre, gamertag, correo, fecha_registro AS fechaRegistro
              FROM jugadores
              WHERE nombre LIKE ? OR gamertag LIKE ?
              ORDER BY nombre`,

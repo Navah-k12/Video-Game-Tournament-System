@@ -6,6 +6,8 @@ const playerRoutes = require('./routes/playerRoutes');
 const videogameRoutes = require('./routes/videogameRoutes');
 const scoreRoutes = require('./routes/scoreRoutes');
 
+const { getRanking, getStats } = require('./controllers/scoreController');
+
 const app = express();
 
 app.use(express.json());
@@ -23,6 +25,13 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
     res.json({ message: 'API Sistema de Torneo de Videojuegos funcionando' });
 });
+
+app.use('/api/jugadores', playerRoutes);
+app.use('/api/videojuegos', videogameRoutes);
+app.use('/api/puntuaciones', scoreRoutes);
+
+app.get('/api/ranking', getRanking);
+app.get('/api/estadisticas', getStats);
 
 app.use('/api/players', playerRoutes);
 app.use('/api/videogames', videogameRoutes);

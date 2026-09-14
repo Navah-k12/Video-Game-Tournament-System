@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { registerScore, getRanking, getStats } = require('../controllers/scoreController');
+const { registerScore, getScores, getRanking, getStats } = require('../controllers/scoreController');
 
-router.post('/score', registerScore);
+router.post('/', registerScore);
+router.get('/', getScores);
 router.get('/ranking', getRanking);
-router.get('/stats', getStats);
+router.get('/estadisticas', getStats);
 
 module.exports = router;
