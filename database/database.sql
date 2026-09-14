@@ -1,4 +1,4 @@
-CREATE DATABASE videojuegos,
+CREATE DATABASE IF NOT EXISTS videojuegos;
 USE videojuegos; 
 
 
