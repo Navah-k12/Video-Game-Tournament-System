@@ -2,15 +2,15 @@
 const db = require('../config/db');
 
 const registerVideogame = async (req,res) =>{
-    const {name, genre} = req.body;
+    const {nombre, genero} = req.body;
 
-    if(!name || !genre){
+    if(!nombre || !genero){
         return res.status(400).json({error: 'No deje niun campo basio'});
     };
 
     try{
-        const query = 'INSERT INTO Events(name,genre) VALUES(?,?)';
-        await db.query(query,[name, genre]);
+        const query = 'INSERT INTO Events(nombre,genero) VALUES(?,?)';
+        await db.query(query,[nombre, genero]);
 
         return res.status(201).json({message:'El Evento se registro éxitosamente'});
 
