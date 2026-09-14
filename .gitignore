@@ -6,3 +6,7 @@ npm-debug.log
 
 # Entornos y configuración local 
 
+.env
+backend/.env
+.env.* 
+
