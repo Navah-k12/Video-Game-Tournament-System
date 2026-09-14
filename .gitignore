@@ -6,3 +6,4 @@ npm-debug.log
 
 # Entornos y configuración local 
 
+.env
