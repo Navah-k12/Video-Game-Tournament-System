@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArenaScore · Sistema de Torneo de Videojuegos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ================= HEADER ================= -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">AS</span>
+      <div class="brand-text">
+        <span class="brand-name">ArenaScore</span>
+        <span class="brand-sub">Gestión de Torneo</span>
+      </div>
+    </div>
+
+    <div class="ticker" id="ticker">
+      <div class="ticker-item">
+        <span class="ticker-value" id="ticker-jugadores">–</span>
+        <span class="ticker-label">Jugadores</span>
+      </div>
+      <div class="ticker-item">
+        <span class="ticker-value" id="ticker-juegos">–</span>
+        <span class="ticker-label">Videojuegos</span>
+      </div>
+      <div class="ticker-item">
+        <span class="ticker-value" id="ticker-puntuaciones">–</span>
+        <span class="ticker-label">Puntuaciones</span>
+      </div>
+      <div class="ticker-item">
+        <span class="ticker-value" id="ticker-promedio">–</span>
+        <span class="ticker-label">Promedio</span>
+      </div>
+    </div>
+
+    <div class="conn-status" id="conn-status">
+      <span class="dot"></span>
+      <span class="conn-text">Verificando API…</span>
+    </div>
+  </header>
+
+  <div class="body-shell">
+
+    <!-- ================= NAV LATERAL ================= -->
+    <nav class="rail" aria-label="Secciones">
+      <button class="rail-btn is-active" data-view="jugadores">
+        <span class="rail-icon">01</span> Jugadores
+      </button>
+      <button class="rail-btn" data-view="videojuegos">
+        <span class="rail-icon">02</span> Videojuegos
+      </button>
+      <button class="rail-btn" data-view="puntuaciones">
+        <span class="rail-icon">03</span> Puntuaciones
+      </button>
+      <button class="rail-btn" data-view="ranking">
+        <span class="rail-icon">04</span> Clasificación
+      </button>
+      <button class="rail-btn" data-view="buscar">
+        <span class="rail-icon">05</span> Buscar
+      </button>
+      <button class="rail-btn" data-view="estadisticas">
+        <span class="rail-icon">06</span> Estadísticas
+      </button>
+    </nav>
+
+    <!-- ================= CONTENIDO ================= -->
+    <main class="content">
+
+      <!-- ---------- RF01: REGISTRAR JUGADORES ---------- -->
+      <section class="view is-active" id="view-jugadores">
+        <div class="view-head">
+          <h1>Jugadores</h1>
+          <p>Registra participantes del torneo. Gamertag, nombre y correo son obligatorios; el gamertag no se puede repetir.</p>
+        </div>
+
+        <div class="panel-grid">
+          <form class="card form-card" id="form-jugador" novalidate>
+            <h2>Nuevo jugador</h2>
+
+            <label class="field">
+              <span>Nombre</span>
+              <input type="text" name="nombre" id="jugador-nombre" required placeholder="Nombre completo">
+            </label>
+
+            <label class="field">
+              <span>Gamertag / Alias</span>
+              <input type="text" name="gamertag" id="jugador-gamertag" required placeholder="Ej. ShadowX">
+            </label>
+
+            <label class="field">
+              <span>Correo electrónico</span>
+              <input type="email" name="correo" id="jugador-correo" required placeholder="correo@dominio.com">
+            </label>
+
+            <button type="submit" class="btn btn-primary">Registrar jugador</button>
+            <div class="form-msg" id="jugador-msg" role="status" aria-live="polite"></div>
+          </form>
+
+          <div class="card table-card">
+            <div class="card-head">
+              <h2>Jugadores registrados</h2>
+              <button class="btn btn-ghost btn-sm" id="btn-refresh-jugadores">Actualizar</button>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Gamertag</th>
+                    <th>Correo</th>
+                    <th>Fecha de registro</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-jugadores">
+                  <tr class="empty-row"><td colspan="3">Aún no hay jugadores registrados.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- RF02: REGISTRAR VIDEOJUEGOS ---------- -->
+      <section class="view" id="view-videojuegos">
+        <div class="view-head">
+          <h1>Videojuegos</h1>
+          <p>Catálogo de títulos habilitados para el torneo. No pueden existir dos videojuegos con el mismo nombre.</p>
+        </div>
+
+        <div class="panel-grid">
+          <form class="card form-card" id="form-videojuego" novalidate>
+            <h2>Nuevo videojuego</h2>
+
+            <label class="field">
+              <span>Nombre</span>
+              <input type="text" name="nombre" id="juego-nombre" required placeholder="Ej. Tekken 8">
+            </label>
+
+            <label class="field">
+              <span>Género</span>
+              <input type="text" name="genero" id="juego-genero" required placeholder="Ej. Lucha">
+            </label>
+
+            <button type="submit" class="btn btn-primary">Registrar videojuego</button>
+            <div class="form-msg" id="juego-msg" role="status" aria-live="polite"></div>
+          </form>
+
+          <div class="card table-card">
+            <div class="card-head">
+              <h2>Videojuegos registrados</h2>
+              <button class="btn btn-ghost btn-sm" id="btn-refresh-videojuegos">Actualizar</button>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Género</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-videojuegos">
+                  <tr class="empty-row"><td colspan="2">Aún no hay videojuegos registrados.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- RF03 / RF05: REGISTRAR PUNTUACIONES ---------- -->
+      <section class="view" id="view-puntuaciones">
+        <div class="view-head">
+          <h1>Puntuaciones</h1>
+          <p>Registra el resultado de un jugador en un videojuego existente. La puntuación no puede ser negativa.</p>
+        </div>
+
+        <div class="panel-grid">
+          <form class="card form-card" id="form-puntuacion" novalidate>
+            <h2>Nueva puntuación</h2>
+
+            <label class="field">
+              <span>Jugador</span>
+              <select name="jugador" id="puntuacion-jugador" required>
+                <option value="" disabled selected>Selecciona un jugador</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Videojuego</span>
+              <select name="videojuego" id="puntuacion-videojuego" required>
+                <option value="" disabled selected>Selecciona un videojuego</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Puntuación</span>
+              <input type="number" name="puntuacion" id="puntuacion-valor" min="0" step="1" required placeholder="0">
+            </label>
+
+            <label class="field">
+              <span>Fecha</span>
+              <input type="date" name="fecha" id="puntuacion-fecha" required>
+            </label>
+
+            <button type="submit" class="btn btn-primary">Guardar puntuación</button>
+            <div class="form-msg" id="puntuacion-msg" role="status" aria-live="polite"></div>
+          </form>
+
+          <div class="card table-card">
+            <div class="card-head">
+              <h2>Puntuaciones recientes</h2>
+              <button class="btn btn-ghost btn-sm" id="btn-refresh-puntuaciones">Actualizar</button>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Jugador</th>
+                    <th>Videojuego</th>
+                    <th>Puntuación</th>
+                    <th>Fecha</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-puntuaciones">
+                  <tr class="empty-row"><td colspan="4">Aún no hay puntuaciones registradas.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- RF06: CLASIFICACIÓN ---------- -->
+      <section class="view" id="view-ranking">
+        <div class="view-head">
+          <h1>Clasificación</h1>
+          <p>Ranking general ordenado de mayor a menor puntuación.</p>
+        </div>
+
+        <div class="card table-card table-card-wide">
+          <div class="card-head">
+            <h2>Tabla de posiciones</h2>
+            <button class="btn btn-ghost btn-sm" id="btn-refresh-ranking">Actualizar</button>
+          </div>
+          <div class="table-scroll">
+            <table class="ranking-table">
+              <thead>
+                <tr>
+                  <th>Posición</th>
+                  <th>Jugador</th>
+                  <th>Videojuego</th>
+                  <th>Puntuación</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-ranking">
+                <tr class="empty-row"><td colspan="4">Todavía no hay resultados para clasificar.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- RF07: BUSCAR JUGADORES ---------- -->
+      <section class="view" id="view-buscar">
+        <div class="view-head">
+          <h1>Buscar jugadores</h1>
+          <p>Busca por nombre o gamertag para encontrar coincidencias.</p>
+        </div>
+
+        <div class="card">
+          <form id="form-buscar" class="search-row" novalidate>
+            <input type="text" id="buscar-input" placeholder="Nombre o gamertag…" autocomplete="off">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+          </form>
+
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Gamertag</th>
+                  <th>Correo</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-buscar">
+                <tr class="empty-row"><td colspan="3">Escribe un nombre o gamertag para buscar.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- RF08: ESTADÍSTICAS ---------- -->
+      <section class="view" id="view-estadisticas">
+        <div class="view-head">
+          <h1>Estadísticas</h1>
+          <p>Métricas generales calculadas a partir de la información almacenada en MySQL.</p>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <span class="stat-value" id="stat-jugadores">–</span>
+            <span class="stat-label">Jugadores totales</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="stat-videojuegos">–</span>
+            <span class="stat-label">Videojuegos totales</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="stat-puntuaciones">–</span>
+            <span class="stat-label">Puntuaciones registradas</span>
+          </div>
+          <div class="stat-card stat-card-accent">
+            <span class="stat-value" id="stat-promedio">–</span>
+            <span class="stat-label">Puntuación promedio</span>
+          </div>
+        </div>
+
+        <button class="btn btn-ghost" id="btn-refresh-stats">Actualizar estadísticas</button>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
