@@ -20,4 +20,16 @@ const registerPlayers = async (req, res) => {
     }
 };
 
-module.exports = { registerPlayers };
+const getPlayers = async (req, res) => {
+    try {
+        const [rows] = await db.query(
+            'SELECT id, gamertag, correo, fecha_registro FROM jugadores ORDER BY id'
+        );
+        return res.status(200).json(rows);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error al consultar los jugadores' });
+    }
+};
+
+module.exports = { registerPlayers, getPlayers };
