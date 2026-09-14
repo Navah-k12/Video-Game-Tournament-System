@@ -45,4 +45,25 @@ const getRanking = async (req, res) => {
     }
 };
 
-module.exports = { registerScore, getRanking };
+const getStats = async (req, res) => {
+    try {
+        const [[row]] = await db.query(
+            `SELECT
+                (SELECT COUNT(*) FROM jugadores)    AS total_jugadores,
+                (SELECT COUNT(*) FROM videojuegos)  AS total_videojuegos,
+                (SELECT COUNT(*) FROM puntuaciones) AS total_puntuaciones,
+                (SELECT COALESCE(AVG(puntuacion), 0) FROM puntuaciones) AS promedio_puntuacion`
+        );
+        return res.status(200).json({
+            totalJugadores: row.total_jugadores,
+            totalVideojuegos: row.total_videojuegos,
+            totalPuntuaciones: row.total_puntuaciones,
+            promedioPuntuacion: Math.round(Number(row.promedio_puntuacion) * 100) / 100
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error al calcular las estadísticas' });
+    }
+};
+
+module.exports = { registerScore, getRanking, getStats };
