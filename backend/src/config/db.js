@@ -1,20 +1,21 @@
+const mysql = require('mysql2/promise');
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
-const mysql = require('mysql2');
-
-mysql.createConnection({
-    host: '127.0.0.1',
-    user: 'nava',
-    password: 'nava1234',
-    database: 'SistemaTorneos'
+const db = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
 
-db.connection((Error) =>{
-    if(Error){
-        console.error('Error en la conneción en la BD: ',Error)
-        return;
-    }
-    else{
-        console.log("Conectado Exitosamente")
-    }
+db.getConnection()
+    .then(connection => {
+        console.log('¡Conectado exitosamente a la base de datos desde .env!');
+        connection.release();
+    })
+    .catch(err => {
+        console.error('Error al conectar a la base de datos:', err);
+    });
 
-});
+module.exports = db;
