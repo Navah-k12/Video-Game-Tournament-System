@@ -1,8 +1,7 @@
-
 const express = require('express');
 const router = express.Router();
-const {registerScores} = require('../controllers/scoreController');
+const { registerScore } = require('../controllers/scoreController');
 
-router.post('/score', registerScores);
+router.post('/score', registerScore);
 
 module.exports = router;

@@ -1,29 +1,28 @@
-
 const db = require('../config/db');
 
-const registerScores = async(req, res) =>{
-    const {playerId, eventId, score} = req.body;
+const registerScore = async (req, res) => {
+    const { jugadorId, videojuegoId, puntuacion } = req.body;
 
-    if(!playerId || !eventId || !score){
-        return res.status(400).json({error:'Rellena todos los campos'});
-        
-    };
-
-    try{
-        const query = 'INSERT INTO PlayerScores (playerId, eventId, score) VALUES (?,?,?)';
-        await db.query(query,[playerId, eventId, score]);
-
-        return res.status(201).json({message: 'Puntos Registrados éxitosamente'});
-        
-
+    if (!jugadorId || !videojuegoId || puntuacion === undefined) {
+        return res.status(400).json({ error: 'Jugador, videojuego y puntuación son obligatorios' });
     }
-    catch(error){
-        console.error(error)
-        if(error.code === 'ER_NO_REFERENCED_ROW_2'){
-            return res.status(400).json({error: 'El evento o el jugador no esta resgistrado'});
-        };
-        res.status(500).json({error:'Error en el servidor'});
-    };
+
+    const puntos = Number(puntuacion);
+    if (isNaN(puntos) || !Number.isInteger(puntos) || puntos < 0) {
+        return res.status(400).json({ error: 'La puntuación debe ser un número entero no negativo' });
+    }
+
+    try {
+        const query = 'INSERT INTO puntuaciones (jugador_id, videojuego_id, puntuacion) VALUES (?, ?, ?)';
+        await db.query(query, [jugadorId, videojuegoId, puntos]);
+        return res.status(201).json({ message: 'Puntuación registrada exitosamente' });
+    } catch (error) {
+        console.error(error);
+        if (error.code === 'ER_NO_REFERENCED_ROW_2') {
+            return res.status(400).json({ error: 'El jugador o el videojuego no existe' });
+        }
+        return res.status(500).json({ error: 'Error en el servidor al registrar la puntuación' });
+    }
 };
 
-module.exports = {registerScores};
+module.exports = { registerScore };

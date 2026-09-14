@@ -4,6 +4,7 @@ require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 const playerRoutes = require('./routes/playerRoutes');
 const videogameRoutes = require('./routes/videogameRoutes');
+const scoreRoutes = require('./routes/scoreRoutes');
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/players', playerRoutes);
 app.use('/api/videogames', videogameRoutes);
+app.use('/api/scores', scoreRoutes);
 
 app.use((req, res) => {
     res.status(404).json({ error: 'Ruta no encontrada' });
